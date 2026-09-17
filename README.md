@@ -4,7 +4,7 @@ The following instructions gives the guidelines of making your HyperOS Always on
 
 Developing custom Always-On Display (AOD) themes for Xiaomi HyperOS and MIUI requires adhering to OS-level rendering rules, strict power constraints, and specific XML data bindings.
 
-# Viewport Boundaries & OLED Constraints
+# 1. Viewport Boundaries & OLED Constraints
 HyperOS applies strict system-level clipping and pixel-shifting algorithms to protect OLED displays from burn-in and minimize battery drain.
 
 # Safe Display Viewport: 
@@ -17,7 +17,7 @@ The OS periodically shifts the entire AOD UI by a few pixels in random direction
 Include extraScales and extraResources in the root <aod> tag to ensure your layout auto-scales across devices with different screen densities.
 
 
-# Core Variables & System Binding Reference
+# 2. Core Variables & System Binding Reference
 | Category | Variable Name | Type / Output | Description |
 | :--- | :--- | :--- | :--- |
 | **Time** | `#hour12` / `#hour` | Number (1–12 / 0–23) | Current hour |
@@ -32,3 +32,12 @@ Include extraScales and extraResources in the root <aod> tag to ensure your layo
 | **Notifications** | `#hasnotifications` | Number | Total count of active notifications |
 | **Notifications** | `notice_icon0` to `notice_icon3` | `blob.bitmap` | App icon bitmaps bound from rows 0 through 3 |
 | **Notifications** | `noticePkg` | `string[]` | Array of notifying app package names |
+
+
+# 3. Power Optimization Rules
+Restrict useVariableUpdater: Only request variable updates required for your visual design. If your clock does not show ticking seconds, remove DateTime.Second from useVariableUpdater="DateTime.Minute,Battery".
+Cap Frame Rates: Set frameRate="60" during entry animations, but ensure continuous animations pause or stop when not active. Avoid continuous loop="true" render loops unless strictly necessary.
+Asset Compression: Use 8-bit PNGs or optimized WEBP files for static graphics. Keep total theme file size minimal to reduce memory footprint when the system wakes the display controller.
+
+# Template.xml
+Use the template.xml for any type of AOD theme (digital, analog, or graphic-based)
