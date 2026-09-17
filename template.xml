@@ -1,0 +1,72 @@
+<aod 
+  frameRate="60"
+  useVariableUpdater="DateTime.Minute,Battery"
+  screenWidth="1080"
+  version="2"
+  extraScales="sw880-den440:0.8148,sw1860-den440:1"
+  extraResources="sw880-den440::0.91,sw1860-den440::0.5323">     
+
+  <!-- 1. LIFECYCLE HANDLERS -->
+  <ExternalCommands>
+    <Trigger action="init">
+      <ExternCommand command="animationState" strPara="'init'"/>
+    </Trigger>
+  </ExternalCommands>    
+
+  <!-- 2. SYSTEM NOTIFICATION BINDERS (MUST USE NAME "data") -->
+  <VariableBinders>	
+    <ContentProviderBinder name="data" uri="content://aod.notification/notifications" columns="pkg" countName="hasnotifications">
+      <Variable name="noticePkg" type="string[]" column="pkg"/>
+      <Trigger>
+        <VariableCommand name="noticeCount" type="number" expression="min(#hasnotifications-1,4)"/>
+      </Trigger>
+    </ContentProviderBinder>  
+
+    <ContentProviderBinder name="data" uri="content://aod.notification/notifications" columns="icon" countName="hasnotifications">
+      <Variable name="notice_icon0" type="blob.bitmap" column="icon" row="0"/>
+      <Variable name="notice_icon1" type="blob.bitmap" column="icon" row="1"/>
+      <Variable name="notice_icon2" type="blob.bitmap" column="icon" row="2"/>
+      <Variable name="notice_icon3" type="blob.bitmap" column="icon" row="3"/>
+    </ContentProviderBinder>
+  </VariableBinders>			    
+
+  <!-- 3. DATE DATA ARRAYS -->    
+  <VarArray type="string">
+    <Vars><Var name="week" index="#day_of_week-1"/></Vars>
+    <Items>
+      <Item value="SUNDAY"/><Item value="MONDAY"/><Item value="TUESDAY"/>
+      <Item value="WEDNESDAY"/><Item value="THURSDAY"/><Item value="FRIDAY"/><Item value="SATURDAY"/>
+    </Items>
+  </VarArray>    
+
+  <Var name="month_st" expression="" type="string[]" values="'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'"/> 		    
+
+  <!-- 4. UI: DATE DISPLAY (UPPER BOUND) -->    
+  <Text name="date" textExp="#date+' '+@month_st[#month]+' • '+@week" size="32" color="#aaaaaa" align="center" x="540" y="100" alignV="center"/>
+
+  <!-- 5. UI: DIGITAL CLOCK / MAIN GRAPHIC (SAFE MID-ZONE) -->  
+  <Text name="clock" textExp="formatDate('hh:mm', #time)" size="120" color="#ffffff" align="center" x="540" y="450" alignV="center"/>
+
+  <!-- 6. UI: BATTERY INDICATOR (LOWER-MID ZONE) -->    
+  <Group y="880" x="540" align="center" alignV="center" visibility="#battery_enable">
+    <Text name="bat" align="center" color="#ffffff" size="30" textExp="#battery_level+'%'"/>
+  </Group>    
+
+  <!-- 7. UI: NOTIFICATIONS (LOWER BOUND: Y <= 1020) -->    
+  <Var name="noticeSpace" type="number" const="true" expression="48" />
+  <Group y="980" w="1080" visibility="#notification_enable">  
+    <!-- Theme Manager Preview Fallback -->
+    <Group visibility="#preview_mode">  
+      <Image x="540-#noticeSpace*1" w="64" h="64" align="center" srcType="ApplicationIcon" srcExp="'com.android.contacts,com.android.contacts.activities.TwelveKeyDialer'"/>  
+      <Image x="540+#noticeSpace*1" w="64" h="64" align="center" srcType="ApplicationIcon" srcExp="'com.android.mms,com.android.mms.ui.MmsTabActivity'"/>  
+    </Group>  
+
+    <!-- Dynamic Live Icons -->    
+    <Group x="-min(#hasnotifications-1,3)*#noticeSpace" visibility="!#preview_mode">    
+      <Image name="notice_icon0" x="540+#noticeSpace*0" w="64" h="64" align="center" visibility="#hasnotifications>=1"/>    
+      <Image name="notice_icon1" x="540+#noticeSpace*2" w="64" h="64" align="center" visibility="#hasnotifications>=2"/>    
+      <Image name="notice_icon2" x="540+#noticeSpace*4" w="64" h="64" align="center" visibility="#hasnotifications>=3"/>    
+      <Image name="notice_icon3" x="540+#noticeSpace*6" w="64" h="64" align="center" visibility="#hasnotifications>=4"/>    
+    </Group>  
+  </Group>	  
+</aod>
