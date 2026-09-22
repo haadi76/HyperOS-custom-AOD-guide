@@ -41,3 +41,21 @@ Asset Compression: Use 8-bit PNGs or optimized WEBP files for static graphics. K
 
 # Template.xml
 Use the template.xml for any type of AOD theme (digital, analog, or graphic-based)
+
+# 4. Folder structure
+        theme.aodbackup
+                content
+                drawable
+                    preview_aod_0.jpg
+                    preview_aod_small_0.jpg
+                aod_description.xml
+
+  The content folder contains the code and the assets. The drawable folder contains the preview images. The aod_description contains the description for the aod.
+  These two folders and aod_description.xml are compressed as a zip and their extension changed to .aodbackup.
+
+
+
+ # 5. Testing
+ Use the AOD theme manager  https://github.com/haadi76/AOD-Theme-Manager-HyperOS-  , to upload you aodbackup themes and apply them to your system.
+
+
